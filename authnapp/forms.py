@@ -24,8 +24,14 @@ class ShopUserRegisterForm(UserCreationForm):
 
     def clean_age(self):
         data = self.cleaned_data["age"]
-        if data < 18:
-            raise forms.ValidationError("Вы слишком молоды!")
+        if data < 18 or data > 120:
+            raise forms.ValidationError("Некорректный возраст!")
+        return data
+
+    def clean_first_name(self):
+        data = self.cleaned_data["first_name"]
+        if data == "testname":
+            raise forms.ValidationError("Test name error. Choose other name.")
         return data
 
     class Meta:

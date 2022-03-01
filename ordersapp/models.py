@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.shortcuts import get_object_or_404
 
 from mainapp.models import Product
 
@@ -24,7 +25,7 @@ class Order(models.Model):
     created = models.DateTimeField(verbose_name="создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="обновлен", auto_now=True)
     status = models.CharField(verbose_name="статус", max_length=3, choices=ORDER_STATUS_CHOICES, default=FORMING)
-    is_active = models.BooleanField(verbose_name="активен", default=True)
+    is_active = models.BooleanField(db_index=True, verbose_name="активен", default=True)
 
     class Meta:
         ordering = ("-created",)
@@ -62,3 +63,7 @@ class OrderItem(models.Model):
 
     def get_product_cost(self):
         return self.product.price * self.quantity
+
+    @staticmethod
+    def get_item(pk):
+        return get_object_or_404(OrderItem, pk=pk)
